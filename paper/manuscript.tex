@@ -3,7 +3,7 @@
 %%% ADAPTED FROM ELIFE ARTICLE TEMPLATE (8/10/2017)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PREAMBLE
-\documentclass[9pt,bestpractices]{livecoms}
+\documentclass[9pt,bestpractices]{livecoms-new}
 % Use the 'onehalfspacing' option for 1.5 line spacing
 % Use the 'doublespacing' option for 2.0 line spacing
 % Use the 'lineno' option for adding line numbers.
@@ -37,25 +37,27 @@
 \author[4*]{Conor Parks}
 \author[5*]{Julia E. Rice}
 \author[6*]{Michael Shirts}
-\affil[1]{Computational and Systems Biology Program, Memorial Sloan Kettering Cancer Center, New York NY 10065}
+\affil[1]{Computational and Systems Biology Program, Sloan Kettering Institute, Memorial Sloan Kettering Cancer Center, New York NY 10065}
 \affil[2]{Departments of Pharmaceutical Sciences and Chemistry, University of California, Irvine}
 \affil[3]{EaStCHEM School of Chemistry, David Brewster road, Joseph Black Building, The King's Buildings, Edinburgh, EH9 3FJ, UK}
-\affil[4]{I don't know my affiliation}
-\affil[5]{I don't know my affiliation}
+\affil[4]{Department of Chemistry, University of California, San Diego CA 92093}
+\affil[5]{IBM Almaden Research Center, San Jose, CA 95120}
+\affil[6]{Chemical and Biological Engineering, University of Colorado Boulder, Boulder, CO 80309}
 
 
 \corr{john.chodera@choderalab.org}{JDC}
-\corr{dmobley@mobleylab.org}{DLM}
 \corr{antonia.mey@ed.ac.uk}{ASJSM}
+\corr{dmobley@mobleylab.org}{DLM}
 \corr{info@julienmichel.net}{JM}
-\corr{ddd@yyy}{CP}
-\corr{fff@ddd}{MS}
+\corr{cdparks@ucsd.edu}{CP}
+\corr{jrice@ibm.com}{JER}
+\corr{michael.shirts@colorado.edu}{MS}
 
-\contrib[\authfn{1}]{These authors contributed equally to this work}
-\contrib[\authfn{2}]{These authors also contributed equally to this work}
+%\contrib[\authfn{1}]{These authors contributed equally to this work}
+%\contrib[\authfn{2}]{These authors also contributed equally to this work}
 
 
-\blurb{This LiveCoMS document is maintained online on GitHub at \githubrepository; to provide feedback, suggestions, or help improve it, please visit the GitHub repository and participate via the issue tracker.}
+\blurb{This LiveCoMS document is maintained online on GitHub at \githubrepository\\To provide feedback, suggestions, or help improve it, please visit the GitHub repository and participate via the issue tracker.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% ARTICLE START
@@ -67,13 +69,16 @@
 \maketitle
 
 \begin{abstract}
-\todo[inline, color={green!20}]{ASJSM: @Volunteer write abstract}
-This particular document provides a skeleton illustrating key sections for a Best Practices document. Please see the sample \texttt{sample-document.tex} in \url{github.com/livecomsjournal/article_templates/templates} for additional information on and examples of using the LiveCoMS LaTeX class.
-Here we also assume familiarity with LaTeX and knowledge of how to include figures, tables, etc.; if you want examples, see the sample just referenced.
+%\todo[inline, color={green!20}]{ASJSM: @Volunteer write abstract}
+%In your work, in this particular slot, please provide an abstract of no more than 250 words.
+%Your abstract should explain the main contributions of your article, and should not contain any material that is not included in the main text.
+%Please note that your abstract, plus the authorship material following it, must not extend beyond the title page or modifications to the LaTeX class will likely be needed.
+Alchemical free energy calculations can be a useful tool for predicting free energy differences associated with the transfer of small molecules from one environment to another.
+The hallmark of these methods is the use of modified potential energy functions to represent \emph{alchemical} intermediate states that cannot exist in chemistry; by analyzing simulation data collected from a series of bridging alchemical thermodynamic states, transfer free energies (or differences in transfer free energies) can be computed with orders of magnitude less simulation time than observing the process spontaneously. 
+While these methods are highly flexible, care must be taken in avoiding common pitfalls to ensure that computed free energy differences can be robust and reproducible for the chosen forcefield, and that appropriate corrections are included to permit comparison with experimental data.
+In this paper, we review current best practices for several popular application domains of alchemical free energy calculations, including relative and absolute small molecule binding free energy calculations to biomolecular targets.
+\todo[inline]{JDC: What about biopolymer mutations?}
 
-In your work, in this particular slot, please provide an abstract of no more than 250 words.
-Your abstract should explain the main contributions of your article, and should not contain any material that is not included in the main text.
-Please note that your abstract, plus the authorship material following it, must not extend beyond the title page or modifications to the LaTeX class will likely be needed.
 \end{abstract}
 
 \end{frontmatter}
@@ -89,11 +94,30 @@ Please note that your abstract, plus the authorship material following it, must 
 \section{Introduction}
 \label{sec:intro}
 \todo[inline, color={green!20}]{ASJSM: @Volunteer write Intro}
-Meeting Members: 
-David Mobley, Conor Parks, Samarjeet, Julia Rice, Toni Mey, John Chodera, Michael Shirts
-[please add your name if you have contributed to the document!]
-(Original Members: John Chodera, Conor Parks, Heather Mayes)
-People to Invite: Clara Christ (drug discovery expertise), Hannes Loeffler (FESetup expertise)
+%Meeting Members: 
+%David Mobley, Conor Parks, Samarjeet, Julia Rice, Toni Mey, John Chodera, Michael Shirts
+%[please add your name if you have contributed to the document!]
+(%Original Members: John Chodera, Conor Parks, Heather Mayes)
+%People to Invite: Clara Christ (drug discovery expertise), Hannes Loeffler (FESetup expertise)
+
+Alchemical free energy calculations have become a mature technology for computing various properties related to the transfer of chemical species from one environment to another.
+The domain of applicability for these calculations now involves such varied applications as the computation of protein-ligand binding free energies~\cite{binding-free-energies}, ligand selectivities~\cite{selectivity}, partition and distribution coefficients between different liquid phases (such as octanol-water partition coefficients~\cite{octanol-water-partition}), loss of affinity due to resistance mutations~\cite{resistance-mutations}, and changes in protein thermostability due to engineered mutations~\cite{thermostability}.
+
+The defining characteristic of alchemical free energy calculations is the use of a series of modified potential functions $U(x; \lambda)$ in which an alchemical parameter $\lambda$ modulates interactions in a manner that cannot occur in real chemical systems.
+One or more simulations are used to collect data from a multitude of alchemical states to compute a free energy difference between a chemical state ($\lambda_0$) and another chemical or alchemical reference state ($\lambda_1$),
+\begin{eqnarray}
+\Delta f &\equiv& f(\lambda_1) - f(\lambda_0) = - \ln \frac{Z(\lambda_1)}{Z(\lambda_0)}
+\end{eqnarray}
+where the dimensionless free energy $f(\lambda) \equiv \beta F(\lambda)$ is given in terms of partition functions $Z(\lambda)$,
+\begin{eqnarray}
+Z(\lambda) &=& \int dx \, e^{-u(x; \lambda)} .
+\end{eqnarray}
+Here, the inverse temperature $\beta \equiv (k_B T)^{-1}$ where $k_B$ is the Boltzmann constant, and the \emph{reduced potential} $u(x; \lambda)$~\cite{reduced-potential} is generally given by a trace over thermodynamic parameters with their conjugate dynamical variables,
+\begin{eqnarray}
+u(x;\lambda) &\equiv& \beta \left[ U(x;\lambda) + p \, V(x) + \sum_{i=1}^N \mu_i N_i(x) + \cdots \right]
+\end{eqnarray}
+where the collection of thermodynamic and alchemical parameters $\theta \equiv \{\beta, \lambda, p, \mu, \ldots\}$ defines a \emph{thermodynamic state}.
+The physical transformation of interest may require several free energy differences $\Delta f$ to be computed in order to produce an estimate of the overall desired quantity.
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -101,8 +125,10 @@ People to Invite: Clara Christ (drug discovery expertise), Hannes Loeffler (FESe
 %%%%%%%%%%%%%%%%%%%%
 \section{Prerequisites}
 \label{sec:pre}
-Here you would identify prerequisites/background knowledge that are assumed by your work and your checklist which you view as critical, ideally giving links to good sources on these topics.
-Checklists are normally focused on errors made by users with training and experience in molecular simulations, so you can assume a basic familiarity with the fundamentals of molecular simulations.
+%Here you would identify prerequisites/background knowledge that are assumed by your work and your checklist which you view as critical, ideally giving links to good sources on these topics.
+%Checklists are normally focused on errors made by users with training and experience in molecular simulations, so you can assume a basic familiarity with the fundamentals of molecular simulations.
+Readers are expected to have a good working knowledge of both biomolecular simulations and the theory underlying alchemical free energy calculations.
+Good reviews of alchemical free energy calculation theory and practice can be found at {\color{red}[CITE REVIEWS]}.
 
 \section{Scope and Goals}
 \label{sec:scope}
