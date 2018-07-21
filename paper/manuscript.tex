@@ -384,6 +384,15 @@ An example of this approach for relative binding free energy calculations includ
 This threshold can be empirically defined as the number of atoms being inserted or deleted in the simulation / 100. 
 If the absolute value of the difference in SEM is below the defined threshold then the change in \lambda for re-evaluation of SEM in dU/d\lambda is defined by the distance of the current difference in SEM from the threshold divided by the derivative of SEM with respect to \lambda.
 
+When analyzing the results of free energy calculations, convergence is an important component of how reliable an estimate may be. 
+If the rate of change in the free energy estimate is large when a calculation is finished, this indicates that the simulation is not locally converged and more sampling is necessary to find an estimate that no longer experiences large change over time.
+Therefore it is important use convergence metrics to estimate when a calculation should be stopped.
+Examples of stopping condition methods include using standard error to determine when uncertainty in the free energy estimate is sufficient, evaluating the SEM in dU/d\lambda for each \lambda, calculating the variance in free energy using bootstrap analysis, and comparing differences in free energies calculated using different percentages of the simulation in both the forward and reverse directions.
+In relative calculations that share similar binding modes and do not induce large conformational changes when in complex with protein, the need to sample exhaustively to converge estimates in free energy differences is often not necessary due to the locality of sampling changes in the molecular topology and shared phase space of the core atoms. 
+However, even subtle induced changes in protein binding configuration will require more sampling or cause local convergence to a free energy estimate that has high error.
+Enhanced sampling techniques have been proposed to try and overcome barriers in free energy calculations and mitigate convergence to the erroneous estimates [ref].
+
+
 \begin{enumerate}
 \item Choice of discrete alchemical protocol (Shirts, Mey, Chodera)
 	%\begin{itemize}
