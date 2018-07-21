@@ -380,6 +380,9 @@ A key additional consideration in choosing the alchemical pathway is the choice 
 The spacing depends to some extent on the choice of analysis method, though states should essentially be spaced equidistant in the relevant thermodynamic length [ref].
 For BAR/MBAR techniques this means that spacings should typically be equal in [what, variance? ref].
 Some schemes to adaptively optimize the spacing of intermediate states based on initial exploratory simulations have been proposed [refs].
+An example of this approach for relative binding free energy calculations includes saving configurations from short 10 picosecond simulations starting at lambda 0, and evaluating changes in the standard error of mean (SEM) in dU/d\lambda as re-evaluated at new values of \lambda starting with a step size of 0.01 up to a predetermined threshold. 
+This threshold can be empirically defined as the number of atoms being inserted or deleted in the simulation / 100. 
+If the absolute value of the difference in SEM is below the defined threshold then the change in \lambda for re-evaluation of SEM in dU/d\lambda is defined by the distance of the current difference in SEM from the threshold divided by the derivative of SEM with respect to \lambda.
 
 \begin{enumerate}
 \item Choice of discrete alchemical protocol (Shirts, Mey, Chodera)
