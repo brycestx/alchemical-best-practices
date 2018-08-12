@@ -181,8 +181,10 @@ An attempt at identifying most important checklist items.
 Extensive explanation for the checklist questions can be found in section~\ref{sec:step0}.
 \begin{itemize}
 \item Can I get the required accuracy with the simulation I want to carry out
-\item
-\item And finally
+\item Does my system contain any groups that require custom parameters
+\item Do I want to run absolute or relative binding calculations
+\item What can we do to challenge the paradigm of simulations without appropriate parameters
+\item How long should it take to set systems up to make an impact on drug discovery projects
 \end{itemize}
 \end{checklist}
 
@@ -380,16 +382,17 @@ A key additional consideration in choosing the alchemical pathway is the choice 
 The spacing depends to some extent on the choice of analysis method, though states should essentially be spaced equidistant in the relevant thermodynamic length [ref].
 For BAR/MBAR techniques this means that spacings should typically be equal in [what, variance? ref].
 Some schemes to adaptively optimize the spacing of intermediate states based on initial exploratory simulations have been proposed [refs].
-An example of this approach for relative binding free energy calculations includes saving configurations from short 10 picosecond simulations starting at lambda 0, and evaluating changes in the standard error of mean (SEM) in dU/d\lambda as re-evaluated at new values of \lambda starting with a step size of 0.01 up to a predetermined threshold. 
+An example of this approach for relative binding free energy calculations includes saving configurations from short 10 picosecond simulations starting at lambda 0, and evaluating changes in the standard error of mean (SEM) in dU/d$\lambda$ as re-evaluated at new values of $\lambda$ starting with a step size of 0.01 up to a predetermined threshold. 
 This threshold can be empirically defined as the number of atoms being inserted or deleted in the simulation / 100. 
-If the absolute value of the difference in SEM is below the defined threshold then the change in \lambda for re-evaluation of SEM in dU/d\lambda is defined by the distance of the current difference in SEM from the threshold divided by the derivative of SEM with respect to \lambda.
+If the absolute value of the difference in SEM is below the defined threshold then the change in $\lambda$ for re-evaluation of SEM in dU/d$\lambda$ is defined by the distance of the current difference in SEM from the threshold divided by the derivative of SEM with respect to $\lambda$.
 
 When analyzing the results of free energy calculations, convergence is an important component of how reliable an estimate may be. 
 If the rate of change in the free energy estimate is large when a calculation is finished, this indicates that the simulation is not locally converged and more sampling is necessary to find an estimate that no longer experiences large change over time.
 Therefore it is important use convergence metrics to estimate when a calculation should be stopped.
-Examples of stopping condition methods include using standard error to determine when uncertainty in the free energy estimate is sufficient, evaluating the SEM in dU/d\lambda for each \lambda, calculating the variance in free energy using bootstrap analysis, and comparing differences in free energies calculated using different percentages of the simulation in both the forward and reverse directions.
+Examples of stopping condition methods include using standard error to determine when uncertainty in the free energy estimate is sufficient, evaluating the SEM in dU/d$\lambda$ for each $\lambda$, calculating the variance in free energy using bootstrap analysis, and comparing differences in free energies calculated using different percentages of the simulation in both the forward and reverse directions.
 In relative calculations that share similar binding modes and do not induce large conformational changes when in complex with protein, the need to sample exhaustively to converge estimates in free energy differences is often not necessary due to the locality of sampling changes in the molecular topology and shared phase space of the core atoms. 
 However, even subtle induced changes in protein binding configuration will require more sampling or cause local convergence to a free energy estimate that has high error.
+Additionally, absolute binding calculations often require more sampling due to the complete annihilation of the molecule from its environment [ref JC please advise].
 Enhanced sampling techniques have been proposed to try and overcome barriers in free energy calculations and mitigate convergence to the erroneous estimates [ref].
 
 
